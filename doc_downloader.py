@@ -1,4 +1,4 @@
-import re
+import re, os
 from pprint import pprint
 import requests
 from bs4 import BeautifulSoup
@@ -21,7 +21,7 @@ class WebDownloader(object):
 
     def parse_html(self, verbose=False):
         html = get_html(self.url)
-        soup = BeautifulSoup(html, parser='lxml')
+        soup = BeautifulSoup(html, parser='lxml', features="lxml")
         for link in soup.findAll('a'):
             if link.has_attr('href'):
                 href = str(link.get('href'))
@@ -30,22 +30,26 @@ class WebDownloader(object):
                     if verbose:
                         print(link.get('href'))
 
-    def download(self):
-        for link in self.links:
+    def download(self, save_dir):
+        print("find {} documents in this url: ".format(len(self.links)))
+        for i, link in enumerate(self.links):
             link = str(link)
             if link.endswith('.pdf'):  # handle direct pdf url link
                 file_name = link.split('/')[-1]
                 try:
                     r = requests.get(link)
-                    # with open(os.path.join(path, file_name), 'wb+') as f:
-                    with open(file_name, 'wb+') as f:
+                    save_path = os.path.join(save_dir, file_name) if save_dir else file_name
+                    with open(save_path, 'wb+') as f:
                         f.write(r.content)
+                    print("  file {}/{}: {} download complete".format(i, len(self.links), link))
                 except Exception as e:
                     print('Downloading error:{}\nlink:{}'.format(e, link))
+
+    def pipeline(self, save_dir=None):
+        self.parse_html()
+        self.download(save_dir)
 
 
 url = 'https://cs231n.github.io/neural-networks-1/'
 wd = WebDownloader(url)
-wd.parse_html()
-pprint(wd.links)
-wd.download()
+wd.pipeline()
