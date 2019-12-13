@@ -1,5 +1,5 @@
 #coding=utf-8
-import re, os
+import re, os, sys
 from pprint import pprint
 import requests
 from bs4 import BeautifulSoup
@@ -75,6 +75,5 @@ class WebDownloader(object):
             self.url_list.pop(0)
 
 # url = 'https://cs231n.github.io/neural-networks-1/'
-url = 'https://zh.wikipedia.org/wiki/%E4%BD%9C%E6%96%87'
-wd = WebDownloader(url)
+wd = WebDownloader(sys.argv[1])
 wd.run(url)
