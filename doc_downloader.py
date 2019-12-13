@@ -74,6 +74,6 @@ class WebDownloader(object):
             self.pipeline(url)
             self.url_list.pop(0)
 
-# url = 'https://cs231n.github.io/neural-networks-1/'
+url = 'https://cs231n.github.io/neural-networks-1/'
 wd = WebDownloader(sys.argv[1])
 wd.run(url)
